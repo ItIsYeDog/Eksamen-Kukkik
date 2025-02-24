@@ -12,17 +12,10 @@ Dette er en MVP for reinsdyrregistrering, laget med **EJS, TailwindCSS og Expres
 - Backend: **Node.js, Express, MongoDB**
 - Frontend: **EJS, TailwindCSS**
 - Autentisering: **JWT, bcrypt**
-- Hosting: **Railway/Vercel**
+- Hosting: **Lokalt på skoleVM**
 
 ## 🔗 Prosjektstyring
 - [GitHub Projects](https://github.com/users/ItIsYeDog/projects/4)
 
 ## 📊 ER-Diagram
 ![ER-diagram](docs/er-diagram.png)
-
-## 📖 Hvordan kjøre lokalt
-```bash
-git clone https://github.com/Eksamen-Kukkik.git
-cd ditt-repo
-npm install
-npm run dev
