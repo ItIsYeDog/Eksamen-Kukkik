@@ -15,7 +15,7 @@ Dette er en MVP for reinsdyrregistrering, laget med **EJS, TailwindCSS og Expres
 - Hosting: **Railway/Vercel**
 
 ## 🔗 Prosjektstyring
-- [GitHub Projects](https://github.com/Eksamen-Kukkik/projects)
+- [GitHub Projects]([https://github.com/ItIsYeDog/projects/4])
 
 ## 📊 ER-Diagram
 ![ER-diagram](docs/er-diagram.png)
