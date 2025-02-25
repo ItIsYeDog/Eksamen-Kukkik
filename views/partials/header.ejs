@@ -1,0 +1,17 @@
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold text-gray-800 hover:text-gray-900 transition-colors">Kukkik Ano</a>
+        <div class="flex items-center gap-6">
+            <a href="/faq" class="text-gray-600 hover:text-gray-900 transition-colors">FAQ</a>
+            <a href="/kart" class="text-gray-600 hover:text-gray-900 transition-colors">Kart</a>
+            <div class="flex items-center gap-4">
+                <% if (locals.user) { %>
+                    <a href="/auth/logout" class="text-gray-600 hover:text-gray-900 transition-colors">Logg ut</a>
+                <% } else { %>
+                    <a href="/auth/login" class="text-gray-600 hover:text-gray-900 transition-colors">Logg inn</a>
+                    <a href="/auth/register" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Registrer</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+</header>

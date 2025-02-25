@@ -128,3 +128,13 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Multer Uploads
+public/uploads/buemerker/*
+!public/uploads/buemerker/.gitkeep
+
+# Env
+.env
+
+# Node Modules
+node_modules/

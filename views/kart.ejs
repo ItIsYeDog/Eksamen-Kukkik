@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kart - Kukkik Ano</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/header') %>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Samiske språkområder</h1>
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <img 
+                    src="/images/samiske-omrader.png" 
+                    alt="Kart over samiske språkområder" 
+                    class="w-full h-auto"
+                >
+                
+                <div class="p-6 space-y-4">
+                    <h2 class="text-2xl font-semibold text-gray-900">Oversikt over områdene</h2>
+                    
+                    <p class="text-gray-600">
+                        Dette kartet viser de ti samiske språkområdene som brukes som beiteområder i systemet vårt. 
+                        Hvert område representerer tradisjonelle samiske bosetninger og kulturområder.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Nordlige områder:</h3>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• Nordsamisk - Største området i nord</li>
+                                <li>• Skoltsamisk - Øst i Finnmark</li>
+                                <li>• Enaresamisk - Rundt Enaresjøen</li>
+                                <li>• Kildinsamisk - Kola-halvøya</li>
+                                <li>• Ter - Kola-halvøya</li>
+                                <li>• Akkalasamisk - Områder av Akkala</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Sørlige områder:</h3>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• Lulesamisk - Salten/Lofoten</li>
+                                <li>• Pitesamisk - Langs Piteälven</li>
+                                <li>• Umesamisk - Umeälven</li>
+                                <li>• Sørsamisk - Trøndelag/Helgeland</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">
+                            Merk: Dette kartet er en forenklet fremstilling av de samiske språkområdene. 
+                            De faktiske grensene kan være mer komplekse og overlappende.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
