@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Beiteomrade = require('../models/Beite');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 // Liste over alle beiteområder med deres geografiske data
 const mockBeiteomrader = [
@@ -149,6 +150,9 @@ const mockBeiteomrader = [
 // Funksjon for å fylle databasen med beiteområder
 async function seedBeiteomrader() {
     try {
+
+        console.log('Trying to connect to:', process.env.MONGO_URI);
+
         // Kobler til MongoDB
         await mongoose.connect(process.env.MONGO_URI);
         console.log('Koblet til MongoDB');
