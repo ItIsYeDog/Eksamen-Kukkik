@@ -59,6 +59,17 @@
                                                 Født: <%= new Date(dyr.fodselsdato).toLocaleDateString('no-NO') %>
                                             </p>
                                         </div>
+                                        <%# DEBUG console.log('User ID:', locals.userId); %>
+                                        <%# DEBUG console.log('Flokk eier ID:', flokk.eier._id); %>
+                                        
+                                        <% if (locals.userId && locals.userId.toString() === flokk.eier._id.toString()) { %>
+                                            <button 
+                                                onclick="deleteReinsdyr('<%= dyr._id %>')"
+                                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                                            >
+                                                Slett
+                                            </button>
+                                        <% } %>
                                     </div>
                                 </div>
                             <% }) %>
@@ -79,5 +90,37 @@
     </main>
 
     <%- include('../partials/footer') %>
+
+    <script>
+        async function deleteReinsdyr(id) {
+            if (!confirm('Er du sikker på at du vil slette dette reinsdyret?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/reinsdyr/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin' // Viktig for å sende med cookies
+                });
+    
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Kunne ikke slette reinsdyr');
+                }
+    
+                // Vis suksessmelding og oppdater siden
+                alert('Reinsdyr ble slettet');
+                window.location.reload();
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('Feil ved sletting: ' + error.message);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -82,6 +82,41 @@ const reinsdyrController = {
                 });
             }
         }
+    },
+
+    deleteReinsdyr: async (req, res) => {
+        try {
+            // Finn reinsdyret og populer flokk-informasjon
+            const reinsdyr = await Reinsdyr.findById(req.params.id)
+                .populate('flokk');
+            
+            if (!reinsdyr) {
+                return res.status(404).json({ 
+                    error: 'Reinsdyr ikke funnet' 
+                });
+            }
+
+            // Sjekk om brukeren har tilgang
+            if (!reinsdyr.flokk || reinsdyr.flokk.eier.toString() !== req.userId) {
+                return res.status(403).json({ 
+                    error: 'Du har ikke tilgang til å slette dette reinsdyret' 
+                });
+            }
+
+            // Slett reinsdyret
+            await Reinsdyr.findByIdAndDelete(req.params.id);
+            
+            // Send suksessrespons
+            res.json({ 
+                success: true,
+                message: 'Reinsdyr ble slettet' 
+            });
+        } catch (error) {
+            console.error('Delete error:', error);
+            res.status(500).json({ 
+                error: 'Kunne ikke slette reinsdyr: ' + error.message 
+            });
+        }
     }
 };
 
