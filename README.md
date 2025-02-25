@@ -16,6 +16,3 @@ Dette er en MVP for reinsdyrregistrering, laget med **EJS, TailwindCSS og Expres
 
 ## 🔗 Prosjektstyring
 - [GitHub Projects](https://github.com/users/ItIsYeDog/projects/4)
-
-## 📊 ER-Diagram
-![ER-diagram](docs/er-diagram.png)
