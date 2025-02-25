@@ -98,7 +98,7 @@ const flokkController = {
                 });
 
                 await flokk.save();
-                res.redirect('/');
+                res.redirect('/?success=flokk');
             } catch (error) {
                 // Håndterer feil og viser feilmelding
                 const beiteomrader = await Beiteomrade.find();

@@ -3,11 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kukkik Ano - Reinsdyrregistrering</title>
+    <title>Kukkikk Ano - Reinsdyrregistrering</title>
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
     <%- include('partials/header') %>
+
+    <div id="toast" class="fixed left-1/2 top-4 -translate-x-1/2 z-50 transform transition-all duration-300 opacity-0">
+        <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span id="toastMessage"></span>
+            </div>
+        </div>
+    </div>
+
     <main class="container mx-auto px-4 py-8">
         <div class="max-w-3xl mx-auto text-center">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Finn reinsdyr</h1>
@@ -183,6 +195,36 @@
         const query = document.getElementById('searchInput').value;
         if (query) {
             performSearch(query);
+        }
+    });
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toastMessage.textContent = message;
+        toast.classList.remove('opacity-0');
+        
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+        }, 3000);
+    }
+
+    // sjekker url parameterene etter en sukksess
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        
+        if (success === 'reinsdyr') {
+            showToast('Reinsdyr ble registrert!');
+        } else if (success === 'flokk') {
+            showToast('Flokk ble registrert!');
+        }
+
+        // fjerner sukksess paramterene etter reload
+        if (success) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
         }
     });
 </script>

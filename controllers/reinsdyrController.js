@@ -59,7 +59,7 @@ const reinsdyrController = {
             });
 
             await reinsdyr.save();
-            res.redirect('/');
+            res.redirect('/?success=reinsdyr');
         } catch (error) {
             // Håndterer feil ved registrering
             console.error('Error registering reinsdyr:', error);
