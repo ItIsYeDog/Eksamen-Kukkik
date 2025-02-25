@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="no-NO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= flokk.navn %> - Kukkik Ano</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <%- include('../partials/header') %>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="p-6">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= flokk.navn %></h1>
+                            <p class="text-gray-600">Serieinndeling: <%= flokk.serieinndeling %></p>
+                            <p class="text-gray-600">Område: <%= beiteomradeNavn %></p>
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Eierinformasjon</h3>
+                                <p class="text-gray-600">Navn: <%= flokk.eier.navn %></p>
+                                <p class="text-gray-600">E-post: <%= flokk.eier.epost %></p>
+                                <p class="text-gray-600">Telefon: <%= flokk.eier.telefonnummer %></p>
+                                <p class="text-gray-600">Kontaktspråk: <%= flokk.eier.kontaktsprak %></p>
+                            </div>
+                        </div>
+                        <% if (flokk.buemerkeBilde) { %>
+                            <img 
+                                src="<%= flokk.buemerkeBilde %>" 
+                                alt="Buemerke for <%= flokk.navn %>"
+                                class="w-24 h-24 object-contain"
+                            >
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Reinsdyr i flokken</h2>
+                    
+                    <% if (reinsdyr.length === 0) { %>
+                        <p class="text-gray-600">Ingen reinsdyr registrert i denne flokken ennå.</p>
+                    <% } else { %>
+                        <div class="space-y-4">
+                            <% reinsdyr.forEach(dyr => { %>
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="text-xl font-semibold text-gray-900">
+                                                <%= dyr.navn %>
+                                            </h3>
+                                            <p class="text-gray-600 mt-1">
+                                                Serienummer: <%= dyr.serienummer %>
+                                            </p>
+                                            <p class="text-sm text-gray-500 mt-2">
+                                                Født: <%= new Date(dyr.fodselsdato).toLocaleDateString('no-NO') %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+
+                    <div class="mt-6">
+                        <a 
+                            href="/reinsdyr/register" 
+                            class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                        >
+                            Registrer nytt reinsdyr
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

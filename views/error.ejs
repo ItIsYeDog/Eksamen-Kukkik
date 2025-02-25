@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="no-NO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feil - Kukkik Ano</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/header') %>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                    <%= typeof statusCode !== 'undefined' ? statusCode : '404' %>
+                </h1>
+                <p class="text-xl text-gray-600 mb-8">
+                    <%= typeof error !== 'undefined' ? error : 'Siden ble ikke funnet' %>
+                </p>
+                <a 
+                    href="/" 
+                    class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                >
+                    Tilbake til forsiden
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
