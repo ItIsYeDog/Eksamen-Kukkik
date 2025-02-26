@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="no-NO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mine Transaksjoner - Kukkikk Ano</title>
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/header') %>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Mine Transaksjoner</h1>
+            
+            <div class="space-y-4">
+                <% transaksjoner.forEach(transaksjon => { %>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">
+                                    <%= transaksjon.reinsdyr.navn %>
+                                </h3>
+                                <p class="text-gray-600">Status: <%= transaksjon.status %></p>
+                                <p class="text-gray-600">
+                                    Fra: <%= transaksjon.fraEier.navn %><br>
+                                    Til: <%= transaksjon.tilEier.navn %>
+                                </p>
+                                <p class="text-sm text-gray-500 mt-2">
+                                    Opprettet: <%= new Date(transaksjon.opprettetDato).toLocaleDateString('no-NO') %>
+                                </p>
+                            </div>
+
+                            <div class="px-4 py-3 hover:bg-gray-50">
+                                <% if (transaksjon.status === 'ventende' && locals.userId === transaksjon.tilEier._id.toString()) { %>
+                                    <div class="space-y-4">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full w-fit">
+                                                Ny forespørsel
+                                            </span>
+                                            <p class="text-sm font-medium text-gray-900">
+                                                Reinsdyr: <%= transaksjon.reinsdyr.navn %>
+                                            </p>
+                                        </div>
+                            
+                                        <!-- Flokk velger -->
+                                        <form action="/transaksjoner/velg-flokk" method="POST" class="mt-4">
+                                            <input type="hidden" name="transaksjonId" value="<%= transaksjon._id %>">
+                                            
+                                            <div class="mb-4">
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                    Velg målflokk for reinsdyret:
+                                                </label>
+                                                <select name="flokkId" required class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                                    <% brukerFlokker.forEach(flokk => { %>
+                                                        <option value="<%= flokk._id %>"><%= flokk.navn %></option>
+                                                    <% }); %>
+                                                </select>
+                                            </div>
+                                        
+                                            <div class="flex gap-2">
+                                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                                    Velg flokk og godkjenn
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+                            <% if (locals.userId === transaksjon.tilEier._id.toString() && transaksjon.status === 'ventende') { %>
+                                <div class="space-x-2">
+                                    <button onclick="håndterTransaksjon('<%= transaksjon._id %>', true)" 
+                                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                        Godkjenn
+                                    </button>
+                                    <button onclick="håndterTransaksjon('<%= transaksjon._id %>', false)" 
+                                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                        Avslå
+                                    </button>
+                                </div>
+                            <% } %>
+                            
+                            <% if (locals.userId === transaksjon.fraEier._id.toString() && transaksjon.status === 'godkjent_av_ny_eier') { %>
+                                <div class="space-x-2">
+                                    <button onclick="endeligBekreftelse('<%= transaksjon._id %>', true)" 
+                                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                        Bekreft Overføring
+                                    </button>
+                                    <button onclick="endeligBekreftelse('<%= transaksjon._id %>', false)" 
+                                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                        Avbryt Overføring
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function håndterTransaksjon(id, godkjent) {
+            try {
+                const response = await fetch('/transaksjoner/nyEierRespons', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ transaksjonId: id, godkjent })
+                });
+
+                if (!response.ok) throw new Error('Noe gikk galt');
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function endeligBekreftelse(id, godkjent) {
+            try {
+                const response = await fetch('/transaksjoner/endeligBekreftelse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ transaksjonId: id, godkjent })
+                });
+
+                if (!response.ok) throw new Error('Noe gikk galt');
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

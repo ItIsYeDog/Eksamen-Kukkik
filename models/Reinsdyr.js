@@ -18,7 +18,28 @@ const reinsdyrSchema = new mongoose.Schema({
     fodselsdato: {
         type: Date,
         required: true
-    }
+    },
+    aktivTransaksjon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaksjon',
+        default: null
+    },
+    transaksjonsHistorikk: [{
+        fraBuemerkeBilde: String,
+        tilBuemerkeBilde: String,
+        fraEier: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        tilEier: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        dato: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 });
 
 // Auto generer serienummer basert på flokk's serieinndeling

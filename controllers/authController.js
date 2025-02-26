@@ -116,9 +116,14 @@ const authController = {
 
     // Håndterer utlogging ved å slette token
     logout: (req, res) => {
-        res.clearCookie('token');
-        res.redirect('/');
-    }
+        try {
+            res.clearCookie('token');
+            res.redirect('/');
+        } catch (error) {
+            console.error('Logout error:', error);
+            res.status(500).redirect('/');
+        }
+    },
 };
 
 module.exports = authController;

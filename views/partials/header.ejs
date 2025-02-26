@@ -1,17 +1,88 @@
 <header class="bg-white shadow-sm sticky top-0 z-50">
     <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="/" class="text-2xl font-bold text-gray-800 hover:text-gray-900 transition-colors">Kukkikk Ano</a>
+        <!-- Logo -->
+        <a href="/" class="text-2xl font-bold text-gray-900">Kukkik Ano</a>
+
+        <!-- Navigation Items -->
         <div class="flex items-center gap-6">
-            <a href="/faq" class="text-gray-600 hover:text-gray-900 transition-colors">FAQ</a>
-            <a href="/kart" class="text-gray-600 hover:text-gray-900 transition-colors">Kart</a>
-            <div class="flex items-center gap-4">
-                <% if (locals.user) { %>
-                    <a href="/auth/logout" class="text-gray-600 hover:text-gray-900 transition-colors">Logg ut</a>
-                <% } else { %>
-                    <a href="/auth/login" class="text-gray-600 hover:text-gray-900 transition-colors">Logg inn</a>
-                    <a href="/auth/register" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Registrer</a>
-                <% } %>
-            </div>
+            <% if (locals.user) { %>
+                <!-- Main nav links -->
+                <a href="/faq" class="text-gray-600 hover:text-gray-900 transition-colors">FAQ</a>
+                <a href="/kart" class="text-gray-600 hover:text-gray-900 transition-colors">Kart</a>
+
+                <!-- Notifications -->
+                <div class="relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open" 
+                        @click.outside="open = false"
+                        class="relative p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <% if (locals.unreadTransactions > 0) { %>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                <%= locals.unreadTransactions %>
+                            </span>
+                        <% } %>
+                    </button>
+
+                    <!-- Notifications Dropdown -->
+                    <div 
+                        x-show="open"
+                        x-transition
+                        @click.outside="open = false"
+                        class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden"
+                        style="display: none;"
+                    >
+                        <div class="max-h-[400px] overflow-y-auto">
+                            <% if (locals.transaksjoner && locals.transaksjoner.length > 0) { %>
+                                <% locals.transaksjoner.forEach(transaksjon => { %>
+                                    <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
+                                        <% if (transaksjon.status === 'ventende' && locals.userId === transaksjon.tilEier._id.toString()) { %>
+                                            <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mb-2">
+                                                Ny forespørsel
+                                            </span>
+                                        <% } else if (transaksjon.status === 'godkjent_av_ny_eier' && locals.userId === transaksjon.fraEier._id.toString()) { %>
+                                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mb-2">
+                                                Venter på bekreftelse
+                                            </span>
+                                        <% } %>
+                                        <p class="text-sm font-medium text-gray-900"><%= transaksjon.reinsdyr.navn %></p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            <%= new Date(transaksjon.opprettetDato).toLocaleDateString('no-NO') %>
+                                        </p>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="p-4 text-sm text-gray-600">
+                                    Ingen aktive transaksjoner
+                                </div>
+                            <% } %>
+                        </div>
+                        <a href="/transaksjoner/mine" class="block p-4 bg-gray-50 text-sm text-center text-blue-600 hover:text-blue-700 border-t">
+                            Se alle transaksjoner
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <form action="/auth/logout" method="POST" class="ml-2">
+                    <button type="submit" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        Logg ut
+                    </button>
+                </form>
+            <% } else { %>
+                <!-- Auth links for guests -->
+                <a href="/faq" class="text-gray-600 hover:text-gray-900 transition-colors">FAQ</a>
+                <a href="/kart" class="text-gray-600 hover:text-gray-900 transition-colors">Kart</a>
+                <a href="/auth/login" class="text-gray-600 hover:text-gray-900 transition-colors">Logg inn</a>
+                <a href="/auth/register" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Registrer deg
+                </a>
+            <% } %>
         </div>
     </nav>
 </header>
+
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>

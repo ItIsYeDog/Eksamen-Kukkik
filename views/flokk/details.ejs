@@ -36,50 +36,116 @@
                     </div>
                 </div>
             </div>
-
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="p-6">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Reinsdyr i flokken</h2>
-                    
-                    <% if (reinsdyr.length === 0) { %>
-                        <p class="text-gray-600">Ingen reinsdyr registrert i denne flokken ennå.</p>
-                    <% } else { %>
-                        <div class="space-y-4">
-                            <% reinsdyr.forEach(dyr => { %>
-                                <div class="border border-gray-200 rounded-lg p-4">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h3 class="text-xl font-semibold text-gray-900">
-                                                <%= dyr.navn %>
-                                            </h3>
-                                            <p class="text-gray-600 mt-1">
-                                                Serienummer: <%= dyr.serienummer %>
-                                            </p>
-                                            <p class="text-sm text-gray-500 mt-2">
-                                                Født: <%= new Date(dyr.fodselsdato).toLocaleDateString('no-NO') %>
-                                            </p>
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Reinsdyr i flokken</h2>
+                
+                <% if (reinsdyr.length === 0) { %>
+                    <p class="text-gray-600">Ingen reinsdyr registrert i denne flokken ennå.</p>
+                <% } else { %>
+                    <div class="space-y-3">
+                        <% reinsdyr.forEach(dyr => { %>
+                            <div 
+                                class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                                data-reinsdyr-id="<%= dyr._id %>"
+                                data-har-aktiv-transaksjon="<%= !!dyr.aktivTransaksjon %>"
+                            >
+                                <div class="flex justify-between items-center">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-4">
+                                            <h3 class="text-lg font-semibold text-gray-900"><%= dyr.navn %></h3>
+                                            <span class="text-sm text-gray-500">№ <%= dyr.serienummer %></span>
                                         </div>
-                                        <%# DEBUG console.log('User ID:', locals.userId); %>
-                                        <%# DEBUG console.log('Flokk eier ID:', flokk.eier._id); %>
-                                        
+                                        <p class="text-sm text-gray-600 mt-1">
+                                            Født: <%= new Date(dyr.fodselsdato).toLocaleDateString('no-NO') %>
+                                        </p>
+
+                                        <% if (dyr.aktivTransaksjon) { %>
+                                            <div class="mt-2 flex items-center">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <svg class="mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
+                                                        <circle cx="4" cy="4" r="3" />
+                                                    </svg>
+                                                    Under overføring
+                                                </span>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="flex gap-2">
                                         <% if (locals.userId && locals.userId.toString() === flokk.eier._id.toString()) { %>
                                             <button 
+                                                onclick="startTransaksjon('<%= dyr._id %>')"
+                                                class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors text-sm"
+                                            >
+                                                Overfør
+                                            </button>
+                                            <button 
+                                                onclick="internOverforing('<%= dyr._id %>')"
+                                                class="bg-green-600 text-white px-3 py-1 rounded transition-colors text-sm <%= dyr.aktivTransaksjon ? 'opacity-50 cursor-not-allowed bg-gray-400' : 'hover:bg-green-700' %>"
+                                                <%= dyr.aktivTransaksjon ? 'disabled' : '' %>
+                                            >
+                                                Intern overføring
+                                            </button>
+                                            <button 
                                                 onclick="deleteReinsdyr('<%= dyr._id %>')"
-                                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                                                class="bg-red-500 text-white px-3 py-1 rounded transition-colors text-sm <%= dyr.aktivTransaksjon ? 'opacity-50 cursor-not-allowed bg-gray-400' : 'hover:bg-red-600' %>"
+                                                <%= dyr.aktivTransaksjon ? 'disabled' : '' %>
                                             >
                                                 Slett
                                             </button>
                                         <% } %>
                                     </div>
                                 </div>
-                            <% }) %>
-                        </div>
+
+                                <% if (dyr.aktivTransaksjon) { %>
+                                    <div class="mt-3 pt-3 border-t border-gray-200">
+                                        <div class="text-sm text-gray-600">
+                                            <p class="font-medium">Transaksjonsstatus:</p>
+                                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                                <li>Status: <%= dyr.aktivTransaksjon.status %></li>
+                                                <li>Dato: <%= new Date(dyr.aktivTransaksjon.opprettetDato).toLocaleDateString('no-NO') %></li>
+                                                <% if (dyr.aktivTransaksjon.målFlokk) { %>
+                                                    <li>Målflokk: <%= dyr.aktivTransaksjon.målFlokk.navn %></li>
+                                                <% } %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <% if (pagination.total > 1) { %>
+                            <div class="mt-8 flex justify-center items-center gap-2">
+                                <% if (pagination.hasPrev) { %>
+                                    <a href="?page=<%= pagination.current - 1 %>" 
+                                    class="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                                    >
+                                        ←
+                                    </a>
+                                <% } %>
+                                
+                                <% for(let i = 1; i <= pagination.total; i++) { %>
+                                    <a href="?page=<%= i %>"
+                                    class="px-3 py-1 rounded <%= pagination.current === i ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' %> transition-colors"
+                                    >
+                                        <%= i %>
+                                    </a>
+                                <% } %>
+                                
+                                <% if (pagination.hasNext) { %>
+                                    <a href="?page=<%= pagination.current + 1 %>" 
+                                    class="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                                    >
+                                        →
+                                    </a>
+                                <% } %>
+                            </div>
+                        <% } %>
                     <% } %>
 
                     <div class="mt-6">
-                        <a 
-                            href="/reinsdyr/register" 
-                            class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                        <a href="/reinsdyr/register" 
+                        class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             Registrer nytt reinsdyr
                         </a>
@@ -89,10 +155,125 @@
         </div>
     </main>
 
+    
+
     <%- include('../partials/footer') %>
 
+    <div id="transferModal" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <h3 class="text-lg font-semibold mb-4">Overfør reinsdyr</h3>
+            <input 
+                type="email" 
+                id="newOwnerEmail" 
+                placeholder="E-post til ny eier"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg mb-4"
+            >
+            <div class="flex justify-end gap-2">
+                <button 
+                    onclick="closeTransferModal()"
+                    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                >
+                    Avbryt
+                </button>
+                <button 
+                    onclick="confirmTransfer()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                    Overfør
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="internOverforingModal" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <h3 class="text-lg font-semibold mb-4">Overfør til annen flokk</h3>
+            <select 
+                id="målFlokkSelect" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4"
+            >
+                <% brukerFlokker.forEach(målFlokk => { %>
+                    <% if (målFlokk._id.toString() !== flokk._id.toString()) { %>
+                        <option value="<%= målFlokk._id %>"><%= målFlokk.navn %></option>
+                    <% } %>
+                <% }); %>
+            </select>
+            <div class="flex justify-end gap-2">
+                <button 
+                    onclick="closeInternModal()"
+                    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                >
+                    Avbryt
+                </button>
+                <button 
+                    onclick="bekreftInternOverforing()"
+                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                >
+                    Overfør
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let currentReinsdyrId = null;
+
+        function startTransaksjon(reinsdyrId) {
+            currentReinsdyrId = reinsdyrId;
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+            document.getElementById('newOwnerEmail').value = '';
+            currentReinsdyrId = null;
+        }
+
+        async function confirmTransfer() {
+            const email = document.getElementById('newOwnerEmail').value;
+            if (!email) {
+                alert('Vennligst skriv inn en e-postadresse');
+                return;
+            }
+
+            try {
+                const response = await fetch('/transaksjoner/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        reinsdyrId: currentReinsdyrId,
+                        nyEierEpost: email
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Kunne ikke starte overføring');
+                }
+
+                alert('Overføring startet! Den nye eieren vil bli varslet.');
+                closeTransferModal();
+                location.reload();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        // Lukk modal hvis man klikker utenfor
+        document.getElementById('transferModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTransferModal();
+            }
+        });
         async function deleteReinsdyr(id) {
+            const reinsdyr = document.querySelector(`[data-reinsdyr-id="${id}"]`);
+            if (reinsdyr.dataset.harAktivTransaksjon === 'true') {
+                alert('Kan ikke slette reinsdyr som er under overføring');
+                return;
+            }
+
             if (!confirm('Er du sikker på at du vil slette dette reinsdyret?')) {
                 return;
             }
@@ -121,6 +302,53 @@
                 alert('Feil ved sletting: ' + error.message);
             }
         }
+        
+    let aktivtReinsdyrId = null;
+
+    function internOverforing(reinsdyrId) {
+        const reinsdyr = document.querySelector(`[data-reinsdyr-id="${reinsdyrId}"]`);
+        if (reinsdyr.dataset.harAktivTransaksjon === 'true') {
+            alert('Kan ikke overføre reinsdyr som allerede er under overføring');
+            return;
+        }
+        aktivtReinsdyrId = reinsdyrId;
+        document.getElementById('internOverforingModal').classList.remove('hidden');
+    }
+
+    function closeInternModal() {
+        document.getElementById('internOverforingModal').classList.add('hidden');
+        aktivtReinsdyrId = null;
+    }
+
+    async function bekreftInternOverforing() {
+        const nyFlokkId = document.getElementById('målFlokkSelect').value;
+        
+        try {
+            const response = await fetch('/reinsdyr/intern-overforing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    reinsdyrId: aktivtReinsdyrId,
+                    nyFlokkId
+                })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+
+            alert('Reinsdyr overført!');
+            location.reload();
+        } catch (error) {
+            alert('Feil ved overføring: ' + error.message);
+        } finally {
+            closeInternModal();
+        }
+    }
     </script>
 </body>
 </html>

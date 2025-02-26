@@ -114,7 +114,10 @@ const flokkController = {
     // Henter detaljer om en spesifikk flokk
     getFlokkDetails: async (req, res) => {
         try {
-            // Henter flokkinfo med tilhørende data
+            const page = parseInt(req.query.page) || 1;
+            const perPage = 10;
+            const skip = (page - 1) * perPage;
+    
             const flokk = await Flokk.findById(req.params.id)
                 .populate('beiteomrade', 'navn fylker')
                 .populate('eier', 'navn epost telefonnummer kontaktsprak');
@@ -125,22 +128,38 @@ const flokkController = {
                 });
             }
     
-            // Krever innlogging for å se detaljer
-            if (!req.userId) {
-                return res.redirect('/auth/login');
-            }
+            // Hent totalt antall reinsdyr for paginering
+            const totalReinsdyr = await Reinsdyr.countDocuments({ flokk: req.params.id });
+            const totalPages = Math.ceil(totalReinsdyr / perPage);
+            const brukerFlokker = await Flokk.find({ eier: req.userId });
     
-            // Henter alle reinsdyr i flokken
+            // Hent paginerte reinsdyr
             const reinsdyr = await Reinsdyr.find({ flokk: req.params.id })
-                .sort({ serienummer: 1 });
-    
-            res.render('flokk/details', { 
+                .populate({
+                    path: 'aktivTransaksjon',
+                    populate: {
+                        path: 'målFlokk tilEier',
+                        select: 'navn'
+                    }
+                })
+                .sort({ serienummer: 1 })
+                .skip(skip)
+                .limit(perPage);
+
+            res.render('flokk/details', {
                 flokk,
                 reinsdyr,
+                brukerFlokker,
+                pagination: {
+                    current: page,
+                    total: totalPages,
+                    hasNext: page < totalPages,
+                    hasPrev: page > 1
+                },
                 beiteomradeNavn: flokk.beiteomrade ? flokk.beiteomrade.navn : 'Ikke tilgjengelig'
             });
         } catch (error) {
-            console.error('Error fetching flokk details:', error);
+            console.error('Error:', error);
             res.status(500).render('error', { 
                 error: 'Kunne ikke hente flokkdetaljer' 
             });

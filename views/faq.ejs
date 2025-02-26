@@ -18,7 +18,45 @@
                 <% const faqs = [
                     {
                         question: "Hvordan registrerer jeg mitt reinsdyr?",
-                        answer: "For å registrere et reinsdyr må du først opprette en brukerkonto og logge inn. Deretter kan du gå til 'Registrer reinsdyr' på forsiden. Du må først ha opprettet en flokk før du kan registrere reinsdyr i den."
+                        answer: `For å registrere et reinsdyr må du først opprette en brukerkonto og logge inn. Deretter kan du gå til 'Registrer reinsdyr' på forsiden. Du må først ha opprettet en flokk før du kan registrere reinsdyr i den.`
+                    },
+                    {
+                        question: "Hvordan overfører jeg et reinsdyr mellom mine egne flokker?",
+                        answer: `Intern overføring er enkelt:
+                                <ol class="list-decimal ml-6 mt-2 space-y-2">
+                                    <li>Gå til flokken hvor reinsdyret befinner seg</li>
+                                    <li>Finn reinsdyret og klikk på 'Intern overføring' knappen</li>
+                                    <li>Velg målflokken fra listen</li>
+                                    <li>Bekreft overføringen</li>
+                                </ol>
+                                <p class="mt-2">Intern overføring skjer umiddelbart uten behov for godkjenning.</p>`
+                    },
+                    {
+                        question: "Hvordan overfører jeg et reinsdyr til en annen eier?",
+                        answer: `For å overføre til en annen eier:
+                                <ol class="list-decimal ml-6 mt-2 space-y-2">
+                                    <li>Gå til flokken med reinsdyret</li>
+                                    <li>Klikk på 'Overfør' knappen ved reinsdyret</li>
+                                    <li>Skriv inn e-postadressen til den nye eieren</li>
+                                    <li>Vent på godkjenning fra den nye eieren</li>
+                                    <li>Gi din endelige bekreftelse når den nye eieren har valgt målflokk</li>
+                                </ol>
+                                <p class="mt-2 text-sm italic">Merk: Reinsdyret blir værende i din flokk til hele prosessen er fullført.</p>`
+                    },
+                    {
+                        question: "Hva skjer når noen vil overføre et reinsdyr til meg?",
+                        answer: `Når noen overfører et reinsdyr til deg:
+                                <ol class="list-decimal ml-6 mt-2 space-y-2">
+                                    <li>Du vil se et varsel i varslingsikonet øverst på siden</li>
+                                    <li>I varslingen kan du se detaljer om reinsdyret</li>
+                                    <li>Du må velge hvilken av dine flokker reinsdyret skal plasseres i</li>
+                                    <li>Du kan da godkjenne eller avslå overføringen</li>
+                                    <li>Hvis du godkjenner, må den opprinnelige eieren gi en endelig bekreftelse</li>
+                                </ol>`
+                    },
+                    {
+                        question: "Kan jeg overføre et reinsdyr som er under overføring?",
+                        answer: "Nei, når et reinsdyr er under en aktiv overføringsprosess, kan det ikke overføres på nytt eller slettes. Dette vises med en status-indikator på reinsdyret, og overførings- og sletteknappene vil være deaktivert."
                     },
                     {
                         question: "Hvilken informasjon trenger jeg for å registrere et reinsdyr?",
@@ -46,11 +84,11 @@
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </summary>
-                        <div class="px-6 pb-8 pt-2 text-gray-600">  <!-- Changed pb-6 to pb-8 and added pt-2 -->
-                            <%= faq.answer %>
+                        <div class="px-6 pb-8 pt-2 text-gray-600">
+                            <%- faq.answer %>
                         </div>
                     </details>
-            <% }) %>
+                <% }) %>
         </div>
     </main>
     <%- include('partials/footer') %>

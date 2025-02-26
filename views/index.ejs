@@ -44,6 +44,37 @@
             
                 <div id="searchResults" class="mt-8 space-y-4 text-left"></div>
             </div>
+            <% if (locals.user) { %>
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Mine Flokker</h2>
+                    
+                    <% if (userFlokker && userFlokker.length > 0) { %>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <% userFlokker.forEach(flokk => { %>
+                                <a href="/flokk/<%= flokk._id %>" 
+                                class="block bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                        <%= flokk.navn %>
+                                    </h3>
+                                    <p class="text-gray-600">Serieinndeling: <%= flokk.serieinndeling %></p>
+                                    <p class="text-gray-600">Område: <%= flokk.beiteomrade.navn %></p>
+                                    <div class="mt-4 text-blue-600 hover:text-blue-700">
+                                        Se reinsdyr →
+                                    </div>
+                                </a>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-6 bg-white rounded-xl shadow-sm">
+                            <p class="text-gray-600 mb-4">Du har ingen registrerte flokker ennå.</p>
+                            <a href="/flokk/register" 
+                            class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                                Registrer din første flokk
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <a href="/reinsdyr/register" class="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">

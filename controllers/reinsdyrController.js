@@ -117,6 +117,43 @@ const reinsdyrController = {
                 error: 'Kunne ikke slette reinsdyr: ' + error.message 
             });
         }
+    },
+    internOverforing: async (req, res) => {
+        try {
+            const { reinsdyrId, nyFlokkId } = req.body;
+
+            // Finn reinsdyret og nåværende flokk
+            const reinsdyr = await Reinsdyr.findById(reinsdyrId)
+                .populate('flokk');
+
+            if (!reinsdyr) {
+                return res.status(404).json({ error: 'Reinsdyr ikke funnet' });
+            }
+
+            // Sjekk at brukeren eier både gammel og ny flokk
+            const [gammelFlokk, nyFlokk] = await Promise.all([
+                Flokk.findOne({ _id: reinsdyr.flokk._id, eier: req.userId }),
+                Flokk.findOne({ _id: nyFlokkId, eier: req.userId })
+            ]);
+
+            if (!gammelFlokk || !nyFlokk) {
+                return res.status(403).json({ 
+                    error: 'Du har ikke tilgang til en av flokkene' 
+                });
+            }
+
+            // Oppdater reinsdyret med ny flokk
+            reinsdyr.flokk = nyFlokkId;
+            await reinsdyr.save();
+
+            res.json({ 
+                success: true, 
+                message: 'Reinsdyr overført til ny flokk' 
+            });
+        } catch (error) {
+            console.error('Intern overføring error:', error);
+            res.status(500).json({ error: error.message });
+        }
     }
 };
 

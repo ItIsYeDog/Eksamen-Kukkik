@@ -10,6 +10,7 @@ const reinsdyrRoutes = require('./routers/reinsdyrRoutes');
 const flokkRoutes = require('./routers/flokkRoutes');
 const notFoundHandler = require('./middleware/notFoundHandler');
 const errorHandler = require('./middleware/errorHandler');
+const transaksjonRoutes = require('./routers/transaksjonRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/', defaultRoutes);
 app.use('/auth', authRoutes);
 app.use('/reinsdyr', reinsdyrRoutes);
 app.use('/flokk', flokkRoutes);
+app.use('/transaksjoner', transaksjonRoutes);
 
 // Error handling (Må være sist)
 app.use(notFoundHandler);
