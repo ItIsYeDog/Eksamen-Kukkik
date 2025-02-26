@@ -4,7 +4,7 @@ const Transaksjon = require('../models/Transaksjon');
 
 const userMiddleware = async (req, res, next) => {
     try {
-        // Initialize default values
+        // default values
         res.locals.user = null;
         res.locals.userId = null;
         res.locals.transaksjoner = [];
@@ -21,7 +21,7 @@ const userMiddleware = async (req, res, next) => {
                 res.locals.userId = user._id.toString();
                 req.userId = user._id.toString();
 
-                // Fetch active transactions
+                // Fetch aktive transaksjoner
                 const transaksjoner = await Transaksjon.find({
                     $or: [
                         { tilEier: user._id, status: 'ventende' },
@@ -41,7 +41,7 @@ const userMiddleware = async (req, res, next) => {
         next();
     } catch (error) {
         console.error('Middleware error:', error);
-        // Continue without transaction data
+        // fortsett uten data
         next();
     }
 };
