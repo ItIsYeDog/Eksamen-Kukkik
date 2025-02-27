@@ -138,3 +138,6 @@ public/uploads/buemerker/*
 
 # Node Modules
 node_modules/
+
+# Scripts
+scripts/
