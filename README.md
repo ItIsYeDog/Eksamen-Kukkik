@@ -53,9 +53,9 @@ nano .env
 ```
 Fyll inn:
 ```
-MONGO_URI=mongodb://10.12.12.96:27017/reinsdyr
-JWT_SECRET=supersecretkey
-PORT=3000
+MONGO_URI=(Din MongoDB link)
+JWT_SECRET=(Din Secret Nøkkel)
+PORT=(Din Port)
 ```
 Lagre filen (CTRL + X, Y, ENTER).
 
@@ -65,7 +65,7 @@ sudo ufw allow 22/tcp  # SSH
 sudo ufw allow OpenSSH
 sudo ufw allow 80/tcp   # HTTP
 sudo ufw allow 443/tcp  # HTTPS
-sudo ufw allow out to 10.12.12.96 port 27017  # MongoDB
+sudo ufw allow out to (MongoDB IP) port 27017  # MongoDB
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw enable
@@ -86,7 +86,7 @@ Legg til følgende konfigurasjon:
 ```
 server {
     listen 80;
-    server_name kukkikk.ALIAS.ikt-fag.no;
+    server_name (Domenet du vil treffe);
 
     location / {
         proxy_pass http://localhost:3000;
