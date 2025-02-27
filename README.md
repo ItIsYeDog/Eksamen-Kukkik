@@ -9,52 +9,119 @@ Dette er en MVP for reinsdyrregistrering, laget med **EJS, TailwindCSS og Expres
 - [x] Kartvisning av områder
 
 ## 🚀 Teknologi
-- **Backend:** Node.js, Express, MongoDB
-- **Frontend:** EJS, TailwindCSS
-- **Autentisering:** JWT, bcrypt
-- **Hosting:** Lokalt på skoleVM
+- **Backend**: Node.js, Express, MongoDB
+- **Frontend**: EJS, TailwindCSS
+- **Autentisering**: JWT, bcrypt
+- **Hosting**: Lokalt på skole-VM
 
-## 📂 Installasjon og kjøring
-
-### 1️⃣ Klon repoet
+## 📂 Oppsett
+### 1️⃣ Installer nødvendige pakker
 ```sh
- git clone https://github.com/ItIsYeDog/reinsdyrregistrering.git
- cd reinsdyrregistrering
+sudo apt update && sudo apt install nginx curl -y
 ```
 
-### 2️⃣ Installer avhengigheter
+### 2️⃣ Installer Node.js med FNM (Fast Node Manager)
+```sh
+curl -fsSL https://fnm.vercel.app/install | bash
+source ~/.bashrc
+fnm install --lts
+fnm use
+```
+
+### 3️⃣ Installer PM2 for prosesshåndtering
+```sh
+npm install -g pm2
+```
+
+### 4️⃣ Klon prosjektet og gi riktige tillatelser
+```sh
+git clone https://github.com/ItIsYeDog/Eksamen-Kukkik.git
+sudo chown -R $USER:$USER Eksamen-Kukkik
+cd Eksamen-Kukkik
+```
+
+### 5️⃣ Installer avhengigheter
 ```sh
 npm install
 ```
 
-### 3️⃣ Sett opp miljøvariabler
-Lag en `.env`-fil i rotmappen og fyll inn:
-```env
-MONGO_URI="mongodb://localhost:27017/reinsdyrDB"
-JWT_SECRET="dinhemmeligejwtkey"
+### 6️⃣ Opprett en `.env`-fil
+Opprett en `.env`-fil i prosjektets rotmappe med riktig MongoDB-tilkobling og JWT-secret:
+```sh
+touch .env
+nano .env
+```
+Fyll inn:
+```
+MONGO_URI=mongodb://10.12.12.96:27017/reinsdyr
+JWT_SECRET=supersecretkey
 PORT=3000
 ```
+Lagre filen (CTRL + X, Y, ENTER).
 
-### 4️⃣ Seed databasen (valgfritt)
+### 7️⃣ Konfigurer brannmur
 ```sh
-node scripts/seedFlokk.js
+sudo ufw allow 22/tcp  # SSH
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp   # HTTP
+sudo ufw allow 443/tcp  # HTTPS
+sudo ufw allow out to 10.12.12.96 port 27017  # MongoDB
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw enable
 ```
 
-### 5️⃣ Start serveren
-**Med nodemon (for utvikling):**
+### 8️⃣ Start Node-serveren med PM2
 ```sh
-npm run dev
+pm2 start app.js
+pm2 save
+pm2 startup
 ```
 
-**Med PM2 (for produksjon):**
+### 9️⃣ Sett opp Nginx som reverse proxy
 ```sh
-pm run start
+sudo nano /etc/nginx/sites-available/default
+```
+Legg til følgende konfigurasjon:
+```
+server {
+    listen 80;
+    server_name kukkikk.ALIAS.ikt-fag.no;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    client_max_body_size 10M;
+}
 ```
 
-## 🔗 Prosjektstyring
-- [GitHub Projects](https://github.com/users/ItIsYeDog/projects/4)
+Lagre og test konfigurasjonen:
+```sh
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
 
+### 🔍 Debugging
+Se status for brannmur:
+```sh
+sudo ufw status verbose
+```
+Se PM2-prosesser:
+```sh
+pm2 list
+```
+Se server-logger:
+```sh
+pm2 logs
+```
 
-## 📬 Kontakt
-Har du spørsmål eller forbedringsforslag? Opprett en issue eller send en pull request!
+---
+🚀 **Nå er prosjektet oppe og kjører!** 🦌
 
