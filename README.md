@@ -17,7 +17,7 @@ Dette er en MVP for reinsdyrregistrering, laget med **EJS, TailwindCSS og Expres
 ## 📂 Oppsett
 ### 1️⃣ Installer nødvendige pakker
 ```sh
-sudo apt update && sudo apt install nginx curl -y
+sudo apt update && sudo apt install nginx curl unzip -y
 ```
 
 ### 2️⃣ Installer Node.js med FNM (Fast Node Manager)
